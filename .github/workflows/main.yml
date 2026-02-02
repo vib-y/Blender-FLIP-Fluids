@@ -10,13 +10,19 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Dependencies
-        run: brew install cmake
+        run: |
+          # Added alembic and tbb which are required for the engine to build
+          brew install cmake alembic tbb
 
       - name: Configure and Build
         run: |
           mkdir build
           cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=arm64
+          # We add CMAKE_PREFIX_PATH so CMake can find where Homebrew installed Alembic
+          cmake .. \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_OSX_ARCHITECTURES=arm64 \
+            -DCMAKE_PREFIX_PATH=$(brew --prefix)
           make -j4
 
       - name: Upload M4 Binary
