@@ -1,0 +1,27 @@
+name: Build FLIP Fluids for M4 (ARM64)
+on: [workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: macos-14 
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: brew install cmake
+
+      - name: Configure and Build
+        run: |
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=arm64
+          make -j4
+
+      - name: Upload M4 Binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: flip_fluids_m4_engine
+          path: |
+            bin/
