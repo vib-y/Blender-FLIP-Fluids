@@ -22,11 +22,19 @@ jobs:
             -DCMAKE_PREFIX_PATH=$(brew --prefix)
           make -j4
 
-      - name: Upload M4 Engine Only
+      # This step helps us debug by showing us where the files actually went
+      - name: List files (Debug)
+        run: |
+          echo "Checking root directory:"
+          ls -R
+          echo "Checking bin directory if it exists:"
+          ls -R bin || echo "bin folder not found"
+
+      - name: Upload M4 Binary
         uses: actions/upload-artifact@v4
         with:
           name: flip_fluids_m4_engine
-          # This specifically grabs the compiled library files from the build folder
+          # This tells GitHub to grab everything in bin AND build folders
           path: |
-            build/src/engine/*.so
-            build/src/engine/*.dylib
+            bin/
+            build/
